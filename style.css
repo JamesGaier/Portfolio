@@ -230,6 +230,9 @@ header {
     .card {
         flex-direction: column;
     }
+    .grid-container {
+        grid-template-columns: auto auto;
+    }
 }
 @media(max-width: 1200px) {
     .banner-container {
