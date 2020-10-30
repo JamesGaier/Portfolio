@@ -231,7 +231,7 @@ header {
         flex-direction: column;
     }
     .grid-container {
-        grid-template-columns: auto auto;
+        grid-template-columns: auto;
     }
 }
 @media(max-width: 1200px) {
