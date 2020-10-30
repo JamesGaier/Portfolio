@@ -1,0 +1,246 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans+Condensed:wght@700&family=Roboto:wght@300&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+h1,h3, a {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 700;
+    color: #000;
+    text-decoration: none;
+}
+p {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 24px;
+    color: #000;
+}
+body {
+    max-width: 1980px;
+    margin: auto;
+}
+/* navbar */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 5%;
+}
+.border {
+    border: 1px solid #000;
+}
+.name {
+    text-decoration: none;
+    color: #000;
+    font-size: 2rem;
+}
+.nav__links {
+    list-style:none;
+    margin-top: .5rem;
+}
+.nav__links li {
+    display: inline-block;
+    padding: 0 20px;
+}
+.nav__links li a {
+    text-decoration: none;
+    color: #000;
+    font-size: 1.2rem;
+}
+.nav__links li:nth-child(1) a {
+    color: #007bff;
+}
+.nav__links li a:hover {
+    text-decoration: none;
+    color: #007bff;
+}
+
+/* banner */
+.banner-container {
+
+    padding-top: 30px;
+    padding-left: 10%;
+    padding-right: 10%;
+    display: flex;
+    flex-direction: row-reverse;
+}
+.pt-50 {
+    padding-top: 50px;
+}
+.col {
+    flex-direction: column;
+}
+.half {
+    width: 50%;
+    overflow: hidden;
+    display:flex;
+}
+.about-me {
+    padding-top: 50px;
+    align-items: left;
+    /* text-align: center; */
+}
+.me img {
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+}
+.link-group {
+    display: flex;
+}
+.link-group i {
+    font-size: 24px;
+    margin: 5px;
+}
+.half p {
+    margin: 20px 0;
+}
+.half a:hover {
+    color: #007bff;
+}
+.container {
+    width: 80%;
+    margin: auto;
+}
+.flex {
+    display: flex;
+}
+.justify-content-center {
+    justify-content: center;
+}
+.align-items-center {
+    align-items: center;
+}
+.row {
+    display: flex;
+    flex-direction: row;
+}
+.col {
+    flex-basis: 100%;
+}
+.flex-col {
+    flex-direction: column;
+}
+#skills {
+    background-color: #efefef;
+    padding: 2em;
+}
+#skills h1 {
+    margin-bottom: 1rem;
+}
+.container h1 {
+    font-size: 2.5rem;
+}
+.skills-listed {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 25%;
+    display: grid;
+
+
+}
+.skills-list li {
+    font-size: 1.5rem;
+    line-height: 5rem;
+
+}
+.skill {
+    margin: 2.5em 1.5em 2.5em 1.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* border: 1px solid #000; */
+}
+.skill img {
+    max-width: 200px;
+    height: 75px;
+    margin-bottom: 1em;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    width: 100%;
+}
+
+#projects {
+    padding: 2em;
+}
+.card-container {
+    width: 100%;
+    margin-top: 2em;
+    justify-content: space-between;
+}
+.card {
+    width: 100%;
+    /* border: 1px solid #efefef; */
+    padding: 2em;
+    border-radius: 15px;
+}
+.video {
+    border-radius: 15px;
+    margin-top: 1em;
+    width: 100%;
+    height: 360px;
+}
+.about-qiskit {
+    margin-top: 3em;
+    padding-left: 2em;
+}
+.about-qiskit p {
+
+}
+@media(max-width: 768px) {
+    header {
+        padding: 25px 2.5%;
+    }
+    .name {
+        font-size: 22px;
+    }
+    .nav__links {
+        padding-top: 7px;
+    }
+    .nav__links li {
+        padding-left: 5px;
+    }
+    .nav__links li a {
+        font-size: 1.2rem !important;
+        /* color: red !important; */
+    }
+    .container {
+        display: block;
+        width: 100%;
+        padding-top: 0px;
+    }
+    .half {
+        width: 100%;
+        height: auto;
+    }
+    .me img {
+        width: 250px;
+        height: 250px;
+    }
+    .img-container {
+        flex-direction: column;
+    }
+}
+@media(max-width: 1200px) {
+    .banner-container {
+        flex-direction: column;
+    }
+    .me img {
+        width: 300px;
+        height: 300px;
+        border-radius: 100%;
+        background-color: #efefef;
+
+    }
+    .half {
+        width: 100%;
+        justify-content: center;
+    }
+    .about-me {
+        align-items: center;
+        text-align: center;
+    }
+}
