@@ -48,9 +48,6 @@ header {
     color: #000;
     font-size: 1.2rem;
 }
-.nav__links li:nth-child(1) a {
-    color: #007bff;
-}
 .nav__links li a:hover {
     text-decoration: none;
     color: #007bff;
