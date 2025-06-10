@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+        <title>Blog</title>
+    </head>
+    <header>
+        <h3 class="name">James Gaier</h3>
+        <nav>
+            <ul class="nav__links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="blog.html">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section id="content">
+        <div class="rocky">
+            <h1>Swapping Mint out for Rocky Linux</h1>
+            <div class="rocky-content">
+                <p>
+                    Last Friday 6/6/25, I wanted to make my system more closely match the Linux systems I have been using at work.  To do this I swapped my Linux Distro from Mint to Rocky Linux, a relative of 
+                    RHEL.  Little did I know that assuming that I remembered the steps to install Linux would land me in a world of hurt. Much good came from this though.  For starters, I learned about the difference between GPT (GUID Partition Table) and MBR(Master Boot Record).  I also learned a lot about BIOS and UEFI.
+                    Lastly swapping Mint out for Rocky Linux allowed me to become more familiar with my BIOS. I started by loading Rocky Linux 9.5 from their website <a href="https://rockylinux.org/">Rocky Linux</a>. 
+                    After doing this I downloaded <a href="https://rufus.ie/en/">Rufus</a>. The first time I tried to flash my computer with Rocky Linux with MBR selected which is for BIOS systems only.
+                    This mistake ended up causing my computer to be in a "mixed boot" situation.  One of the things I learned is that computers boot UEFI first then if it cannot find a UEFI 
+                    OS to boot it looks for a BIOS one.  The problem with this is that my computer would not be able to find the Windows OS in Grub if I used BIOS for Linux.  So after I realized that
+                    I attempted to use GPT this time looking for an online tutorial that covered dual booting linux with Rufus.  This time I was able to flash my computer with linux but when I tried to swap
+                    my drives with the boot order I would expect I ran into an issue... My computer would give a cryptic error that stated that there was no bootable drive.  This was confusing to me because I had thought
+                    that changing the boot order to boot from the linux drive first would be enough.  However, little did I know that you also have to set the linux drive to be the "preferred boot device" in 
+                    "UEFI Hard Disk Drive BBS Priorities" in order to make the linux drive a UEFI bootable device.  This also explained why there was no U icon over my linux drive in the bios which was an indicator of if 
+                    drive was "UEFI bootable".  After that I was able to use both linux and windows and grub was working.
+                </p>
+                
+                <h1>Lessons Learned From Installing Linux</h1>
+                <ul>
+                    <li>Follow a tutorial that shows how to install Linux in case you forget something... Reference this blog if you get stuck.</li>
+                    <li>Always Always Always select GPT as the partitioning scheme if you are working with UEFI systems.</li>
+                    <li>Make sure both os drives that are being booted from have the same partitioning scheme.  DO NOT MIX.  Your system will either need to have all drives BIOS or UEFI not a mix.</li>
+                    <li>Make sure you have Secure Boot Disabled.  Secure Boot messes with dual booting Linux and can result in skipping GRUB and booting straight to Windows.</li>
+                    <li>Make sure your drive is highest priority in the boot order.</li>
+                    <li>For specifically MSI Click BIOS i.e. my computer lol.  Make sure "UEFI Hard Disk Drive BBS Priorities" Has the Linux drive selected.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="k8s">
+            <h1>Making a Kubernetes Cluster</h1>
+            <div class="rocky-content">
+                <p>
+                    On Monday 6/8/25, I attempted to install a Kubernetes cluster on my computer in order to learn Kubernetes.  It was a little difficult but I have worked with Kuberentes before so it was not too bad.
+                    I did run into some issues for my specific setup which I will discuss.  My system is using Rocky Linux 9.5.  This means my container orchestration software is Podman.  Podman support for Kubernetes
+                    is experimental since Podman is a relatively new containerization technology.  I was able to install Kubernetes by following Kubernetes' <a href="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/">getting started guide</a>.
+                    The tricky part in all of this was creating a cluster with <a href="https://minikube.sigs.k8s.io/docs/start/">Minikube</a>.  When I tried to run minikube start using rootless podman I ran into an issue.
+                    Minikube was claiming that a container with the name "minikube" already existed.  What was even more confusing was that when I looked at the logs they claimed that the "minikube" container did not exist which was contradictory to the previous log.
+                    When I did a little more digging I found a couple of things.  Firstly, I found that with Podman specifically you need to tell Minikube that you want to make your cluster using Podman.  This would mean using the --driver argument and setting that equal to Podman.
+                    The other thing that I found out was that for Rootless Podman you would want to use the containerd container runtime.  in totality the minikube start command evolved into "minikube start --driver=podman --container-runtime=containerd".  Doing that still did not fix the problem.
+                    So narrowing down a little bit further I realized that you need to allow Podman to use sudo without a password by running: "sudo visudo" then adding "username ALL=(ALL) NOPASSWD: /usr/bin/podman" to the sudoers file after "#includedir /etc/sudoers.d"
+                    then verifying the change worked by running "sudo -k -n podman version".  After giving Podman passwordless sudo permissions I still had the same error.  So I turned up the verbosity on the minikube start logs using "minikube start --alsologtostderr -v=7" and read through the logs.
+                    The logs were not incredibly helpful however, I did make one observation which was that the minikube container was getting restarted several times.  So I decided to do a test where I would manually pull down the minikube container myself and try running it.  I noticied that the minikube container was
+                    already pulled but I wanted a fresh start so I removed it with "podman rmi container-hash" then I repulled it with "podman pull gcr.io/k8s-minikube/kicbase".  I then attempted to run the container in detached mode using: "podman run -d --name 'minikube' image-hash"
+                    I then looked at the container logs using "podman logs -f minikube" and I found the problem... I was getting a error that said "ERROR: UserNS: cpu controller needs to be delegated".  In english this means that the Kubernetes CPU controller did not have control over CPU resources.  In Kubernetes the CPU controller's 
+                    job is to make sure pods are only using a configured amount of CPU resources.  The fix for the CPU controller not being delegated was to run the following commands:
+                    
+                </p>
+                <ol>
+                    <li>sudo mkdir -p /etc/systemd/system/user@.service.d</li>
+                    <li>cat &lt;&lt; EOF | sudo tee /etc/systemd/system/user@.service.d/delegate.conf </br>
+                        [Service]</br>
+                        Delegate=cpu cpuset io memory pids</br>
+                        EOF</br>
+                    </li>
+                    <li>sudo systemctl daemon-reload</li>
+                </ol>
+                <p>
+                    The other issue I found was that I was getting another error similar to: " error creating libpod runtime: kernel does not support overlay fs: 'overlay' is not supported over extfs at "/home/podman/.local/share/containers/storage/overlay": backing file system is unsupported for this graph driver".
+                    On this error I do not remember exactly what I did but I think doing "rm -rf ~/.config/container ~/.local/share/containers" worked. 
+                </p>
+
+                <h1>Lessons Learned</h1>
+
+                <ul>
+                    <li>You need to make sure rootless podman is configured</li>
+                    <li>Making a Kubernetes Cluster is not just "minikube start" its "minikube start --driver=podman --container-runtime=containerd"</li>
+                    <li>On a rootless podman system you need to make sure that the CPU controller is delegated</li>
+                    <li>To fix the overlayfs issue you need to delete the container cache</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+</html>
